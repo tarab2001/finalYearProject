@@ -1,10 +1,13 @@
 import React, {useState} from "react";
 import {useNavigate} from 'react-router-dom';
+import { Form, Button } from 'semantic-ui-react';
+import { useForm } from "react-hook-form";
 import {database} from '../firebase'
 import {ref,push,child,update} from "firebase/database";
 
 function Booking(){
     const navigate = useNavigate();
+    const {register, handleSubmit, formState: { errors }, onChange} = useForm();
     const [firstName, setFirstName] = useState(null);
     const [lastName, setLastName] = useState(null);
     const [email, setEmail] = useState(null);
@@ -39,7 +42,7 @@ function Booking(){
 
     }
 
-    const handleSubmit  = () => {
+    const onSubmit  = () => {
         let obj = {
             firstName : firstName,
             lastName:lastName,
@@ -49,6 +52,8 @@ function Booking(){
             time:time,
             additional_info:additional_info,
         }       
+        navigate('/confirmation')
+        //alert(JSON.stringify(obj, null, 2));
         const newPostKey = push(child(ref(database), 'posts')).key;
         const updates = {};
         updates['/' + newPostKey] = obj
@@ -57,6 +62,118 @@ function Booking(){
 
     return(
         <div className="flex intems-center justify-center p-12">
+            <div className="mx-auto w-full max-w-[550px] bg-white">
+                <Form onSubmit={handleSubmit(onSubmit)} action="http://localhost:3000/confirmation">
+                    <Form.Field className="mb-5">
+                        <label className="mb-3 block text-base font-medium text-[#07074D]" for="firstName">First Name</label>
+                        <input
+                            className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none 
+                            focus:border-[#6A64F1] focus:shadow-md" 
+                            value={firstName} 
+                            placeholder='First Name'
+                            type="text"
+                            id="firstName"
+                            {...register("firstName", { required: true, maxLength: 10, onChange:(e) => handleInputChange(e) })}
+                        />
+                    </Form.Field>
+                    {errors.firstName && <p className="text-lg text-red-600 font-bold">Please check the First Name</p>}
+                    <Form.Field className="mb-5">
+                        <label className="mb-3 block text-base font-medium text-[#07074D]" for="lasttName">Last Name</label>
+                        <input
+                            className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none 
+                            focus:border-[#6A64F1] focus:shadow-md" 
+                            value={lastName} 
+                            placeholder='Last Name'
+                            type="text"
+                            id="lastName"
+                            {...register("lastName", { required: true, maxLength: 10, onChange:(e) => handleInputChange(e)})}
+                        />
+                    </Form.Field>
+                    {errors.lastName && <p className="text-lg text-red-600 font-bold">Please check the Last Name</p>}
+                    <Form.Field className="mb-5">
+                        <label className="mb-3 block text-base font-medium text-[#07074D]" for="email">Email</label>
+                        <input
+                            className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none 
+                            focus:border-[#6A64F1] focus:shadow-md" 
+                            value={email} 
+                            placeholder='Email'
+                            type="email"
+                            id="email"
+                            {...register("email",
+                            {
+                                required: true,
+                                onChange:(e) => handleInputChange(e),
+                                pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                            })}
+                        />
+                    </Form.Field>
+                    {errors.email && <p className="text-lg text-red-600 font-bold">Please check the Email</p>}
+                    <Form.Field className="mb-5">
+                        <label className="mb-3 block text-base font-medium text-[#07074D]" for="treatment">Treatment</label>
+                        <select id="treatment" className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] 
+                        outline-none focus:border-[#6A64F1] focus:shadow-md"  value={treatment} 
+                        {...register("treatment", { required: true, onChange:(e) => handleInputChange(e)})}>
+                            <option selected>Choose Treatment</option>
+                            <option value="Physio">Physio Session</option>
+                            <option value="InitialAssesment">Initial Assesment</option>
+                            <option value="SportsMassgae">Sports Massage</option>
+                            <option value="VideoCall">Video Call Consultation</option>
+                            <option value="DryNeedle">Dry Needling</option>
+                        </select>
+                    </Form.Field>
+                    {errors.treatment && <p className="text-lg text-red-600 font-bold">Please select a treatment</p>}
+                    <div className="mx-3 flex flex-wrap">
+                        <div className="w-full px-3 sm:w-1/2">
+                            <Form.Field className="mb-5">
+                                <label className="mb-3 block text-base font-medium text-[#07074D]" for="date">Date </label>
+                                <input 
+                                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none
+                                    focus:border-[#6A64F1] focus:shadow-md" 
+                                    type="date" 
+                                    value={date} 
+                                    id="date"
+                                    {...register("date", { required: true, onChange:(e) => handleInputChange(e)})}
+                                />
+                            </Form.Field>
+                            {errors.date && <p className="text-lg text-red-600 font-bold">Please enter a date</p>}
+                        </div>
+                        <div className="w-full px-3 sm:w-1/2">
+                            <Form.Field className="mb-5">
+                                <label className="mb-3 block text-base font-medium text-[#07074D]" for="time">Time </label>
+                                <input 
+                                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none
+                                    focus:border-[#6A64F1] focus:shadow-md" 
+                                    type="time" 
+                                    value={time} 
+                                    id="time" 
+                                    {...register("time", { required: true, onChange:(e) => handleInputChange(e)})}
+                                />
+                            </Form.Field>
+                            {errors.time && <p className="text-lg text-red-600 font-bold">Please enter a time</p>}
+                        </div>
+                    </div>
+                    <Form.Field className="mb-5">
+                        <label className="mb-3 block text-base font-medium text-[#07074D]" for="additional_info">Any Additional Information</label>
+                        <input 
+                            className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none 
+                            focus:border-[#6A64F1] focus:shadow-md" 
+                            type="text" 
+                            value={additional_info} 
+                            onChange = {(e) => handleInputChange(e)} 
+                            id="additional_info"
+                        />
+                    </Form.Field>
+                    <Button className= "hover:shadow-form w-full rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none" 
+                    type="submit">Make Appointment</Button>
+                </Form>
+            </div>
+        </div>
+    );
+}
+
+export default Booking;
+
+/*<div className="flex intems-center justify-center p-12">
             <div className="mx-auto w-full max-w-[550px] bg-white">
                 <div className="mb-5">
                     <label className="mb-3 block text-base font-medium text-[#07074D]" for="firstName">First Name </label>
@@ -117,24 +234,4 @@ function Booking(){
                     onClick={()=>{handleSubmit(); navigate('/confirmation', {paramkey:firstName,});}} type="submit">Register</button>
                 </div>
             </div>
-    </div>      
-    );
-}
-
-export default Booking;
-
-//<input className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none
-//focus:border-[#6A64F1] focus:shadow-md" type="time" value={time} onChange = {(e) => handleInputChange(e)} id="time"/>
-
-//input className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none
-//focus:border-[#6A64F1] focus:shadow-md" type="date" value={date} onChange = {(e) => handleInputChange(e)} id="date"/>
-
-/* <select name="timepicker" id="timepicker" form="appt-form" onChange={(e) => handleInputChange(e)}>
-
-                                <option value="8">08:00</option>
-                                <option value="9">09:00</option>
-                                <option value="10">10:00</option>
-                                <option value="11">11:00</option>
-                                <option value="13">13:00</option>
-                                <option value="14">14:00</option>
-                            </select>*/
+    </div>  */
