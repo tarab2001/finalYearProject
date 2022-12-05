@@ -1,4 +1,4 @@
-import React, {useState,setState} from "react";
+import React from "react";
 import {useNavigate} from 'react-router-dom';
 import image from './images/prices.jpeg';
 

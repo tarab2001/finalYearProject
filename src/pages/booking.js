@@ -1,8 +1,7 @@
-import React, {useState,setState} from "react";
+import React, {useState} from "react";
 import {useNavigate} from 'react-router-dom';
 import {database} from '../firebase'
 import {ref,push,child,update} from "firebase/database";
-
 
 function Booking(){
     const navigate = useNavigate();
@@ -63,23 +62,24 @@ function Booking(){
                     <label className="mb-3 block text-base font-medium text-[#07074D]" for="firstName">First Name </label>
                     <input className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none 
                     focus:border-[#6A64F1] focus:shadow-md" value={firstName} onChange = {(e) => handleInputChange(e)}  type="text" id="firstName" 
-                    placeholder="First Name"/>
+                    placeholder="First Name" required/>
                 </div>
                 <div className="mb-5">
                     <label className="mb-3 block text-base font-medium text-[#07074D]" for="lastName" required="true">Last Name </label>
                     <input className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none
                      focus:border-[#6A64F1] focus:shadow-md" type="text" value={lastName} onChange = {(e) => handleInputChange(e)}  id="lastName" 
-                     placeholder="LastName"/>
+                     placeholder="LastName" required/>
                 </div>
                 <div className="mb-5">
                     <label className="mb-3 block text-base font-medium text-[#07074D]" for="email">Email </label>
                     <input className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none 
-                    focus:border-[#6A64F1] focus:shadow-md"  type="email" value={email} onChange = {(e) => handleInputChange(e)} id="email" placeholder="Email"/>
+                    focus:border-[#6A64F1] focus:shadow-md"  type="email" value={email} onChange = {(e) => handleInputChange(e)} id="email" 
+                    placeholder="Email" required/>
                 </div>
                 <div className="mb-5">
                     <label className="mb-3 block text-base font-medium text-[#07074D]" for="treatment">Treatment</label>
                     <select id="treatment" className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] 
-                    outline-none focus:border-[#6A64F1] focus:shadow-md"  value={treatment} onChange={(e => handleInputChange(e))}>
+                    outline-none focus:border-[#6A64F1] focus:shadow-md"  value={treatment} onChange={(e => handleInputChange(e))} required>
                         <option selected>Choose Treatment</option>
                         <option value="Physio">Physio Session</option>
                         <option value="InitialAssesment">Initial Assesment</option>
@@ -93,21 +93,24 @@ function Booking(){
                         <div className="mb-5">
                             <label className="mb-3 block text-base font-medium text-[#07074D]" for="date">Date </label>
                             <input className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none
-                             focus:border-[#6A64F1] focus:shadow-md" type="date" value={date} onChange = {(e) => handleInputChange(e)} id="date"/>
+                                focus:border-[#6A64F1] focus:shadow-md" type="date" value={date} onChange = {(e) => handleInputChange(e)} 
+                                id="date" required/>
                         </div>
                     </div>
                     <div className="w-full px-3 sm:w-1/2">
                         <div className="mb-5">
                             <label className="mb-3 block text-base font-medium text-[#07074D]" for="time">Time </label>
                             <input className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none
-                             focus:border-[#6A64F1] focus:shadow-md" type="time" value={time} onChange = {(e) => handleInputChange(e)} id="time"/>
+                            focus:border-[#6A64F1] focus:shadow-md" type="time" value={time} onChange = {(e) => handleInputChange(e)} 
+                            id="time" required/>
                         </div>
                     </div>
                 </div>
                 <div className="mb-5">
                     <label className="mb-3 block text-base font-medium text-[#07074D]" for="additional_info">Any Additional Information</label>
                     <input className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none 
-                    focus:border-[#6A64F1] focus:shadow-md" type="text" value={additional_info} onChange = {(e) => handleInputChange(e)} id="additional_info"/>
+                    focus:border-[#6A64F1] focus:shadow-md" type="text" value={additional_info} onChange = {(e) => handleInputChange(e)} 
+                    id="additional_info"/>
                 </div>
                 <div>
                     <button className= "hover:shadow-form w-full rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none"
@@ -119,3 +122,19 @@ function Booking(){
 }
 
 export default Booking;
+
+//<input className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none
+//focus:border-[#6A64F1] focus:shadow-md" type="time" value={time} onChange = {(e) => handleInputChange(e)} id="time"/>
+
+//input className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none
+//focus:border-[#6A64F1] focus:shadow-md" type="date" value={date} onChange = {(e) => handleInputChange(e)} id="date"/>
+
+/* <select name="timepicker" id="timepicker" form="appt-form" onChange={(e) => handleInputChange(e)}>
+
+                                <option value="8">08:00</option>
+                                <option value="9">09:00</option>
+                                <option value="10">10:00</option>
+                                <option value="11">11:00</option>
+                                <option value="13">13:00</option>
+                                <option value="14">14:00</option>
+                            </select>*/

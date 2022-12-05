@@ -7,19 +7,18 @@ import Home from './pages/home';
 import Booking from './pages/booking';
 import Confirmation from './pages/confirmation';
 import Pricing from './pages/pricing';
-import firebase from './firebase';
+//import firebase from './firebase';
 
 
 export default function App() {
   return (
     <BrowserRouter>
+    <Layout />
       <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route path="/home" index element={<Home />} />
+          <Route path="/" index element={<Home />} />
           <Route path="booking" element={<Booking />} />
           <Route path="confirmation" element={<Confirmation />} />
           <Route path="pricing" element={<Pricing />} />
-        </Route>
       </Routes>
     </BrowserRouter>
   );
