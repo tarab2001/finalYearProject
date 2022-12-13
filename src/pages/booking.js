@@ -2,8 +2,10 @@ import React, {useState} from "react";
 import {useNavigate} from 'react-router-dom';
 import { Form, Button } from 'semantic-ui-react';
 import { useForm } from "react-hook-form";
-import {database} from '../firebase'
-import {ref,push,child,update} from "firebase/database";
+import {database} from '../firebase';
+import { uid } from "uid";
+import { ref,set } from "firebase/database";
+import Alert from '@mui/material/Alert';
 
 function Booking(){
     const navigate = useNavigate();
@@ -41,8 +43,19 @@ function Booking(){
         }
 
     }
-
-    const onSubmit  = () => {
+    const writeToDatabase = () => {
+        const uuid = uid();
+        set(ref(database, '/'+uuid),{
+          firstName,
+          lastName,
+          email,
+          treatment,
+          date,
+          time,
+          additional_info,
+          uuid
+        });
+        navigate('confirmation');
         let obj = {
             firstName : firstName,
             lastName:lastName,
@@ -51,19 +64,16 @@ function Booking(){
             date:date,
             time:time,
             additional_info:additional_info,
-        }       
-        navigate('/confirmation')
+        }
         //alert(JSON.stringify(obj, null, 2));
-        const newPostKey = push(child(ref(database), 'posts')).key;
-        const updates = {};
-        updates['/' + newPostKey] = obj
-        return update(ref(database), updates);
-    }
+      }
+
+      
 
     return(
         <div className="flex intems-center justify-center p-12">
             <div className="mx-auto w-full max-w-[550px] bg-white">
-                <Form onSubmit={handleSubmit(onSubmit)} action="http://localhost:3000/confirmation">
+                <Form onSubmit={handleSubmit(writeToDatabase)}>
                     <Form.Field className="mb-5">
                         <label className="mb-3 block text-base font-medium text-[#07074D]" for="firstName">First Name</label>
                         <input
@@ -146,8 +156,12 @@ function Booking(){
                                     type="time" 
                                     value={time} 
                                     id="time" 
+                                    min="08:00"
+                                    max="20:00"
+                                    step="1800"
                                     {...register("time", { required: true, onChange:(e) => handleInputChange(e)})}
                                 />
+                                <p>Appointments are available between 8am and 8pm every 30 minutes</p>
                             </Form.Field>
                             {errors.time && <p className="text-lg text-red-600 font-bold">Please enter a time</p>}
                         </div>
@@ -173,65 +187,22 @@ function Booking(){
 
 export default Booking;
 
-/*<div className="flex intems-center justify-center p-12">
-            <div className="mx-auto w-full max-w-[550px] bg-white">
-                <div className="mb-5">
-                    <label className="mb-3 block text-base font-medium text-[#07074D]" for="firstName">First Name </label>
-                    <input className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none 
-                    focus:border-[#6A64F1] focus:shadow-md" value={firstName} onChange = {(e) => handleInputChange(e)}  type="text" id="firstName" 
-                    placeholder="First Name" required/>
-                </div>
-                <div className="mb-5">
-                    <label className="mb-3 block text-base font-medium text-[#07074D]" for="lastName" required="true">Last Name </label>
-                    <input className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none
-                     focus:border-[#6A64F1] focus:shadow-md" type="text" value={lastName} onChange = {(e) => handleInputChange(e)}  id="lastName" 
-                     placeholder="LastName" required/>
-                </div>
-                <div className="mb-5">
-                    <label className="mb-3 block text-base font-medium text-[#07074D]" for="email">Email </label>
-                    <input className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none 
-                    focus:border-[#6A64F1] focus:shadow-md"  type="email" value={email} onChange = {(e) => handleInputChange(e)} id="email" 
-                    placeholder="Email" required/>
-                </div>
-                <div className="mb-5">
-                    <label className="mb-3 block text-base font-medium text-[#07074D]" for="treatment">Treatment</label>
-                    <select id="treatment" className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] 
-                    outline-none focus:border-[#6A64F1] focus:shadow-md"  value={treatment} onChange={(e => handleInputChange(e))} required>
-                        <option selected>Choose Treatment</option>
-                        <option value="Physio">Physio Session</option>
-                        <option value="InitialAssesment">Initial Assesment</option>
-                        <option value="SportsMassgae">Sports Massage</option>
-                        <option value="VideoCall">Video Call Consultation</option>
-                        <option value="DryNeedle">Dry Needling</option>
-                    </select>
-                </div>
-                <div className="mx-3 flex flex-wrap">
-                    <div className="w-full px-3 sm:w-1/2">
-                        <div className="mb-5">
-                            <label className="mb-3 block text-base font-medium text-[#07074D]" for="date">Date </label>
-                            <input className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none
-                                focus:border-[#6A64F1] focus:shadow-md" type="date" value={date} onChange = {(e) => handleInputChange(e)} 
-                                id="date" required/>
-                        </div>
-                    </div>
-                    <div className="w-full px-3 sm:w-1/2">
-                        <div className="mb-5">
-                            <label className="mb-3 block text-base font-medium text-[#07074D]" for="time">Time </label>
-                            <input className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none
-                            focus:border-[#6A64F1] focus:shadow-md" type="time" value={time} onChange = {(e) => handleInputChange(e)} 
-                            id="time" required/>
-                        </div>
-                    </div>
-                </div>
-                <div className="mb-5">
-                    <label className="mb-3 block text-base font-medium text-[#07074D]" for="additional_info">Any Additional Information</label>
-                    <input className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none 
-                    focus:border-[#6A64F1] focus:shadow-md" type="text" value={additional_info} onChange = {(e) => handleInputChange(e)} 
-                    id="additional_info"/>
-                </div>
-                <div>
-                    <button className= "hover:shadow-form w-full rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none"
-                    onClick={()=>{handleSubmit(); navigate('/confirmation', {paramkey:firstName,});}} type="submit">Register</button>
-                </div>
-            </div>
-    </div>  */
+/*const onSubmit  = () => {
+        const uuid = uid();
+        let obj = {
+            uuid: uuid,
+            firstName : firstName,
+            lastName:lastName,
+            email:email,
+            treatment:treatment,
+            date:date,
+            time:time,
+            additional_info:additional_info,
+        }       
+        navigate('/confirmation')
+        //alert(JSON.stringify(obj, null, 2));
+        const newPostKey = push(child(ref(database), '/Apointments')).key;
+        const updates = {};
+        updates['/' + newPostKey] = obj
+        return update(ref(database), updates);
+    }  */

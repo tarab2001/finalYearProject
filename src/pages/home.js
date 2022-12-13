@@ -58,7 +58,7 @@ function Home(){
                             treatment plan to aid your recovery.</p>
                     </div>
                 </div>
-                 <button className= "bg-indigo-400 hover:bg-indigo-700 text-white text-left uppercase font-bold py-2 px-4 rounded-full " onClick={() => navigate('/booking')}>
+                <button className= "bg-indigo-400 hover:bg-indigo-700 text-white text-left uppercase font-bold py-2 px-4 rounded-full " onClick={() => navigate('/booking')}>
                     Book Now
                 </button>
             </div>

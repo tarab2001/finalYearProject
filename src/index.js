@@ -17,7 +17,7 @@ export default function App() {
       <Routes>
           <Route path="/" index element={<Home />} />
           <Route path="booking" element={<Booking />} />
-          <Route path="confirmation" element={<Confirmation />} />
+          <Route path="booking/confirmation" element={<Confirmation />} />
           <Route path="pricing" element={<Pricing />} />
       </Routes>
     </BrowserRouter>
