@@ -4,20 +4,23 @@ import { Form, Button } from 'semantic-ui-react';
 import { useForm } from "react-hook-form";
 import {database} from '../firebase';
 import { uid } from "uid";
-import { ref,set } from "firebase/database";
-import Alert from '@mui/material/Alert';
+import { ref,set, child, get, getDatabase } from "firebase/database";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import "firebase/database";
+
+
 
 function Booking(){
     const navigate = useNavigate();
-    const {register, handleSubmit, formState: { errors }, onChange} = useForm();
-    const [firstName, setFirstName] = useState(null);
-    const [lastName, setLastName] = useState(null);
-    const [email, setEmail] = useState(null);
-    const [date,setDate] = useState(null);
-    const [time,setTime] = useState(null);
-    const [treatment,setTreatment] = useState(null);
-    const [additional_info,setAdditionalInfo] = useState(null);
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [date,setDate] = useState('');
+    const [time,setTime] = useState('');
+    const [treatment,setTreatment] = useState('');
+    const [additional_info,setAdditionalInfo] = useState('');
     const [showModal, setShowModal] = React.useState(false);
+    const {register, handleSubmit, formState: { errors }} = useForm();
 
     const handleInputChange = (e) => {
         const {id , value} = e.target;
@@ -42,8 +45,7 @@ function Booking(){
         if(id === "additional_info"){
             setAdditionalInfo(value);
         }
-
-    }
+    };
     const writeToDatabase = () => {
         const uuid = uid();
         set(ref(database, '/'+uuid),{
@@ -57,20 +59,21 @@ function Booking(){
           uuid
         });
         setShowModal(true);
-        //navigate('confirmation');
-        let obj = {
-            firstName : firstName,
-            lastName:lastName,
-            email:email,
-            treatment:treatment,
-            date:date,
-            time:time,
-            additional_info:additional_info,
-        }
-        alert(JSON.stringify(obj, null, 2));
-      }
+    }
 
-      
+    const dbRef = ref(getDatabase());
+
+    const dateToCheck = date;
+
+    get(child(dbRef, `/${dateToCheck}`)).then((snapshot) => {
+        if (snapshot.exists()) {
+            console.log("Date not available!!");
+        } 
+    }).catch((error) => {
+        console.error(error);
+    });
+
+
 
     return(
         <div className="flex intems-center justify-center p-12">
@@ -81,7 +84,7 @@ function Booking(){
                         <input
                             className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none 
                             focus:border-[#6A64F1] focus:shadow-md" 
-                            value={firstName} 
+                            value={firstName}
                             placeholder='First Name'
                             type="text"
                             id="firstName"
@@ -94,7 +97,7 @@ function Booking(){
                         <input
                             className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none 
                             focus:border-[#6A64F1] focus:shadow-md" 
-                            value={lastName} 
+                            value={lastName}
                             placeholder='Last Name'
                             type="text"
                             id="lastName"
@@ -107,7 +110,7 @@ function Booking(){
                         <input
                             className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none 
                             focus:border-[#6A64F1] focus:shadow-md" 
-                            value={email} 
+                            value={email}
                             placeholder='Email'
                             type="email"
                             id="email"
@@ -123,14 +126,13 @@ function Booking(){
                     <Form.Field className="mb-5">
                         <label className="mb-3 block text-base font-medium text-[#07074D]" for="treatment">Treatment</label>
                         <select id="treatment" className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] 
-                        outline-none focus:border-[#6A64F1] focus:shadow-md"  value={treatment} 
+                        outline-none focus:border-[#6A64F1] focus:shadow-md"  value={treatment} defaultValue="Choose Option"
                         {...register("treatment", { required: true, onChange:(e) => handleInputChange(e)})}>
-                            <option selected>Choose Treatment</option>
                             <option value="Physio">Physio Session</option>
-                            <option value="InitialAssesment">Initial Assesment</option>
-                            <option value="SportsMassgae">Sports Massage</option>
-                            <option value="VideoCall">Video Call Consultation</option>
-                            <option value="DryNeedle">Dry Needling</option>
+                            <option value="Initial Assesment">Initial Assesment</option>
+                            <option value="Sports Massgae">Sports Massage</option>
+                            <option value="Video Call">Video Call Consultation</option>
+                            <option value="Dry Needle">Dry Needling</option>
                         </select>
                     </Form.Field>
                     {errors.treatment && <p className="text-lg text-red-600 font-bold">Please select a treatment</p>}
@@ -142,8 +144,9 @@ function Booking(){
                                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none
                                     focus:border-[#6A64F1] focus:shadow-md" 
                                     type="date" 
-                                    value={date} 
+                                    value={date}
                                     id="date"
+                                    min={new Date().toISOString().substring(0, 10)}
                                     {...register("date", { required: true, onChange:(e) => handleInputChange(e)})}
                                 />
                             </Form.Field>
@@ -156,7 +159,7 @@ function Booking(){
                                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none
                                     focus:border-[#6A64F1] focus:shadow-md" 
                                     type="time" 
-                                    value={time} 
+                                    value={time}
                                     id="time" 
                                     min="08:00"
                                     max="20:00"
@@ -169,12 +172,18 @@ function Booking(){
                         </div>
                     </div>
                     <Form.Field className="mb-5">
-                        <label className="mb-3 block text-base font-medium text-[#07074D]" for="additional_info">Any Additional Information</label>
+                        <label className="group mb-3 block text-base font-medium text-[#07074D]" for="additional_info">
+                            <InformationCircleIcon className="flex justify-between h-5 w-5 rounded-full mr-1"/>
+                            <span class="group-hover:opacity-100 z-40 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute bottom-0 translate-y-4 right-2 mt-6 opacity-0 m-4 mx-auto">
+                                Any info regarding injury that will help physio fully understand e.g. any medication you are taking, triggering factors, previous treatment, etc.
+                            </span>
+                        Any Additional Information</label>
                         <input 
                             className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none 
                             focus:border-[#6A64F1] focus:shadow-md" 
                             type="text" 
-                            value={additional_info} 
+                            placeholder="Any information regarding injury"
+                            value={additional_info}
                             onChange = {(e) => handleInputChange(e)} 
                             id="additional_info"
                         />
@@ -201,9 +210,10 @@ function Booking(){
                                         </button>
                                     </div>
                                     <div className="relative p-6 flex-auto">
-                                        <p className="my-4 text-slate-500 text-lg leading-relaxed">
-                                           Your Appointment Details are:
-                                        </p>
+                                        <p className="my-4 text-center text-slate-500 text-lg leading-relaxed">
+                                           Your Appointment Details are: </p>
+                                        <p className="my-4 text-slate-500 text-lg leading-relaxed"> 
+                                         {"A " + treatment + " appointment for " + firstName + " " + lastName + " (" + email + ") " + " on " + date + " at " + time} </p>
                                     </div>
                                     <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
                                         <button
