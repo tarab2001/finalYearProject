@@ -6,63 +6,22 @@ import Alert from '@mui/material/Alert';
 
  export default function Confirmation() {
   const navigate = useNavigate();
-  const [firstName] = useState();
-  const [lastName] = useState();
-  const [apps, setApps] = useState([]);
+  const [lastInput, setLastInput] = useState('');
   
  
   useEffect(() => {
-    onValue(ref(database), snapshot => {
-      setApps([]);
-      const data = snapshot.val()
-      if(data !== null){
-        Object.values(data).map((firstName) => {
-          setApps(oldArray => [...oldArray, firstName]);
-        });
-      }
+    // Read the last input from the database
+    ref(database,'/').limitToLast(1).on('value', (snapshot) => {
+      const data = snapshot.val();
+      setLastInput(data);
     });
   }, []);
+
     return (
       <div className="flex intems-center justify-center p-12">
-        <div className="mx-auto w-full max-w-[550px] bg-white">
-          {apps.map(firstName => (
-          <>
-            <h1>First Name: {firstName.firstName}</h1>
-          </>
-          ))}
-          {apps.map(lastName => (
-          <>
-            <h1>Last Name: {lastName.lastName}</h1>
-          </>
-          ))}
-          {apps.map(email => (
-            <>
-              <h1>Email: {email.email}</h1>
-            </>
-          ))}
-          {apps.map(treatment => (
-            <>
-              <h1>Treatment Type: {treatment.treatment}</h1>
-            </>
-          ))}
-          {apps.map(date => (
-            <>
-              <h1>Date: {date.date}</h1>
-            </>
-          ))}
-          {apps.map(time => (
-            <>
-              <h1>Time: {time.time}</h1>
-            </>
-          ))}
-          {apps.map(additional_info => (
-            <>
-              <h1>Additional Information: {additional_info.additional_info}</h1>
-            </>
-          ))}
-          <button className= "hover:shadow-form w-full rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none" 
-            type="submit" onClick={() => navigate('/')}>Confirm</button>
-        </div>
+        <p>The last thing inputted into the database is: {lastInput}</p>
+        <button className= "hover:shadow-form w-full rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none" 
+          type="submit" onClick={() => navigate('/')}>Confirm</button>
       </div>
     )
   };

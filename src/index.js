@@ -7,6 +7,7 @@ import Home from './pages/home';
 import Booking from './pages/booking';
 import Confirmation from './pages/confirmation';
 import Pricing from './pages/pricing';
+import 'tw-elements';
 //import firebase from './firebase';
 
 
