@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 
 function navBar() {
     return (
-        <nav className="flex justify-between items-center h-16 bg-white text-black relative shadow-sm font-mono"
+        <nav className="flex justify-between items-center h-16 bg-white text-black relative shadow-sm font-mono w-full"
         role='navigation'>
             <Link to= '/' className="pl-8">Hard Knox Physiotherapy</Link>
             <div className="pr-8 md:block hidden">

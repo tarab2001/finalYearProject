@@ -11,9 +11,9 @@ function Home(){
         <div>
             <div className="relative flex flex-col items-center justify-center">
                 <img className="h-1/2 w-full" src={image} alt="person running" />
-                <h1 className="absolute text-3xl font-bold text-black top-44 left-1/2 -translate-x-1/2 -translate-y-1/2">We Help People Get Back To Their Physical Best</h1>
-                <p className="absolute text-3xl text-black font-bold top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">Book Appointment Now!</p>
-                <button className= "absolute bg-indigo-400 hover:bg-indigo-700 text-white uppercase font-bold py-2 px-4 rounded-full top-2/3 left-1/2 -translate-x-1/2 -translate-y-1/2 " onClick={() => navigate('/booking')}>
+                <h1 className="absolute font-bold text-black top-20 left-1/2 -translate-x-1/2 -translate-y-1/2 md:text-xl md:top-24 lg:text-3xl lg:top-44">We Help People Get Back To Their Physical Best</h1>
+                <p className="absolute text-black font-bold top-28 left-1/2 -translate-x-1/2 lg:-translate-y-1/2 md:text-xl md:top-48 lg:text-3xl lg:top-1/2">Book Appointment Now!</p>
+                <button className= "absolute bg-indigo-400 hover:bg-indigo-700 text-white uppercase font-bold py-2 px-4 rounded-full top-2/3 left-1/2 -translate-x-1/2 -translate-y-1/2  lg:text-3xl lg:top-2/3" onClick={() => navigate('/booking')}>
                     Book Now
                 </button>
             </div>
