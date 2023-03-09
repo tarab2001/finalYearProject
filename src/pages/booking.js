@@ -1,10 +1,10 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {useNavigate} from 'react-router-dom';
 import { Form, Button } from 'semantic-ui-react';
 import { useForm } from "react-hook-form";
 import {database} from '../firebase';
 import { uid } from "uid";
-import { ref,set, child, get, getDatabase } from "firebase/database";
+import { ref, set, onValue } from "firebase/database";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import "firebase/database";
 
@@ -20,7 +20,9 @@ function Booking(){
     const [treatment,setTreatment] = useState('');
     const [additional_info,setAdditionalInfo] = useState('');
     const [showModal, setShowModal] = React.useState(false);
+    const [showError, setShowError] = React.useState(false);
     const {register, handleSubmit, formState: { errors }} = useForm();
+    const [apps, setApps] = useState([]);
 
     const handleInputChange = (e) => {
         const {id , value} = e.target;
@@ -46,8 +48,9 @@ function Booking(){
             setAdditionalInfo(value);
         }
     };
-    const writeToDatabase = () => {
-        const uuid = uid();
+
+    const  writeToDatabase = () => {
+        let uuid = uid();
         set(ref(database, '/'+uuid),{
           firstName,
           lastName,
@@ -61,19 +64,32 @@ function Booking(){
         setShowModal(true);
     }
 
-    const dbRef = ref(getDatabase());
+    useEffect(() => {
+        onValue(ref(database), snapshot => {
+          let data = snapshot.val()
+          if(data !== null){
+            Object.values(data).map((date) => {
+              setApps(oldArray => [...oldArray, date]);
+            });
+            //console.log("Apps aray: " + apps);
+            console.log("Date: " + date);
+          }
+        });
+      }, []);
+      
+      const isFound = apps.some(element => {
+        if (element.date === date && element.time === time) {
+          return true;
+        }
+        return false;
+      });
+    
+      if (isFound) {
+        //setShowError(true);
+        alert(date + time + ' is already booked. Please choose another date/time :)');
+      }
 
-    const dateToCheck = date;
-
-    get(child(dbRef, `/${dateToCheck}`)).then((snapshot) => {
-        if (snapshot.exists()) {
-            console.log("Date not available!!");
-        } 
-    }).catch((error) => {
-        console.error(error);
-    });
-
-
+     
 
     return(
         <div className="flex intems-center justify-center p-12">
@@ -237,6 +253,39 @@ function Booking(){
                         <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
                     </>
                 ): null}
+                {showError ?  (
+                    <>
+                        <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                            <div className="relative w-auto my-6 mx-auto max-w-3xl">
+                                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                                    <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+                                        <h3 className="text-3xl font-semibold">
+                                            Date + Time is already taken
+                                        </h3>
+                                        <button
+                                            className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                                            onClick={() => setShowModal(false)}
+                                        >
+                                            <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
+                                            ×
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+                                        <button
+                                            className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                            type="button"
+                                            onClick={() => setShowModal(false)}
+                                        >
+                                            Close
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+                    </>
+                ): null}
             </div>
         </div>
     );
@@ -244,22 +293,27 @@ function Booking(){
 
 export default Booking;
 
-/*const onSubmit  = () => {
-        const uuid = uid();
-        let obj = {
-            uuid: uuid,
-            firstName : firstName,
-            lastName:lastName,
-            email:email,
-            treatment:treatment,
-            date:date,
-            time:time,
-            additional_info:additional_info,
-        }       
-        navigate('/confirmation')
-        //alert(JSON.stringify(obj, null, 2));
-        const newPostKey = push(child(ref(database), '/Apointments')).key;
-        const updates = {};
-        updates['/' + newPostKey] = obj
-        return update(ref(database), updates);
+/*
+         <div>
+                {apps.map(date => (
+                <>
+                <h1>{date.date}</h1>
+                </>
+                ))}
+            </div>
+            <div className = "px-5">
+                {dateExists ? ( <p>{dateToCheck} exists in the array</p>
+                                ) : ( <p>{dateToCheck} does not exist in the array</p>
+                                )}
+                {timeExists ? ( <p>{timeToCheck} exists in the array</p>
+                                ) : ( <p>{timeToCheck} does not exist in the array</p>
+                                )}
+            </div>
+            <div>
+                {apps.map(time => (
+                <>
+                <h1>{time.time}</h1>
+                </>
+                ))}
+            </div>
     }  */
