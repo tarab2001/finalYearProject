@@ -49,21 +49,6 @@ function Booking(){
         }
     };
 
-    const  writeToDatabase = () => {
-        let uuid = uid();
-        set(ref(database, '/'+uuid),{
-          firstName,
-          lastName,
-          email,
-          treatment,
-          date,
-          time,
-          additional_info,
-          uuid
-        });
-        setShowModal(true);
-    }
-
     useEffect(() => {
         onValue(ref(database), snapshot => {
           let data = snapshot.val()
@@ -76,19 +61,36 @@ function Booking(){
           }
         });
       }, []);
-      
-      const isFound = apps.some(element => {
-        if (element.date === date && element.time === time) {
-          return true;
-        }
-        return false;
-      });
-    
-      if (isFound) {
-        //setShowError(true);
-        alert(date + time + ' is already booked. Please choose another date/time :)');
-      }
 
+    const  writeToDatabase = () => {
+        let uuid = uid();
+        const isFound = apps.some(element => {
+            if (element.date === date && element.time === time) {
+              return true;
+            }
+            return false;
+          });
+        
+          if (isFound) {
+            setShowError(true);
+            //alert(date + time + ' is already booked. Please choose another date/time :)');
+          }
+          else{
+            set(ref(database, '/'+uuid),{
+                firstName,
+                lastName,
+                email,
+                treatment,
+                date,
+                time,
+                additional_info,
+                uuid
+              });
+              setShowModal(true);
+          }
+    }
+      
+     
      
 
     return(
@@ -144,6 +146,7 @@ function Booking(){
                         <select id="treatment" className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] 
                         outline-none focus:border-[#6A64F1] focus:shadow-md"  value={treatment} defaultValue="Choose Option"
                         {...register("treatment", { required: true, onChange:(e) => handleInputChange(e)})}>
+                            <option value="default">Choose Appointment Type</option>
                             <option value="Physio">Physio Session</option>
                             <option value="Initial Assesment">Initial Assesment</option>
                             <option value="Sports Massgae">Sports Massage</option>
@@ -264,7 +267,7 @@ function Booking(){
                                         </h3>
                                         <button
                                             className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                                            onClick={() => setShowModal(false)}
+                                            onClick={() => setShowError(false)}
                                         >
                                             <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
                                             ×
@@ -275,7 +278,7 @@ function Booking(){
                                         <button
                                             className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                             type="button"
-                                            onClick={() => setShowModal(false)}
+                                            onClick={() => setShowError(false)}
                                         >
                                             Close
                                         </button>
