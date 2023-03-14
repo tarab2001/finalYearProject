@@ -6,7 +6,9 @@ import man2 from './images/man2.jpeg';
 import woman from './images/Jenny.jpeg';
 
 function Home(){
+    //create navigate variable
     const navigate = useNavigate();
+    //return Home page
     return(
         <div>
             <div className="relative flex flex-col items-center justify-center">
@@ -100,5 +102,5 @@ function Home(){
         </div>
     );
 }
-
+//export Home page
 export default Home;

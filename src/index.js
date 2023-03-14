@@ -10,13 +10,7 @@ import 'tw-elements';
 
 
 export default function App() {
-
-  /*useEffect(() => {
-    const appRef = database.ref('/');
-    appRef.on('value', (snapshot) => {
-      console.log(snapshot.val());
-    });
-  }, []);*/
+  //return routes
   return (
     <BrowserRouter>
     <Layout />

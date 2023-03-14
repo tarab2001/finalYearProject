@@ -2,6 +2,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 
 function navBar() {
+    //return NavBar and where to link to when clicked
     return (
         <nav className="flex justify-between items-center h-16 bg-white text-black relative shadow-sm font-mono w-full"
         role='navigation'>

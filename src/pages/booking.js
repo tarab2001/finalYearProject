@@ -11,6 +11,7 @@ import "firebase/database";
 
 
 function Booking(){
+    //create variables
     const navigate = useNavigate();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -24,6 +25,7 @@ function Booking(){
     const {register, handleSubmit, formState: { errors }} = useForm();
     const [apps, setApps] = useState([]);
 
+    //set variable when input field is changed
     const handleInputChange = (e) => {
         const {id , value} = e.target;
         if(id === "firstName"){
@@ -50,6 +52,7 @@ function Booking(){
     };
 
     useEffect(() => {
+        //set appointment array from database
         onValue(ref(database), snapshot => {
           let data = snapshot.val()
           if(data !== null){
@@ -57,13 +60,14 @@ function Booking(){
               setApps(oldArray => [...oldArray, date]);
             });
             //console.log("Apps aray: " + apps);
-            console.log("Date: " + date);
+            //console.log("Date: " + date);
           }
         });
       }, []);
 
     const  writeToDatabase = () => {
         let uuid = uid();
+        //check if date and time is already in array
         const isFound = apps.some(element => {
             if (element.date === date && element.time === time) {
               return true;
@@ -71,10 +75,12 @@ function Booking(){
             return false;
           });
         
+          //if date and time is in array show error
           if (isFound) {
             setShowError(true);
             //alert(date + time + ' is already booked. Please choose another date/time :)');
           }
+          //otherwise add new appointment to database
           else{
             set(ref(database, '/'+uuid),{
                 firstName,
@@ -89,10 +95,8 @@ function Booking(){
               setShowModal(true);
           }
     }
-      
-     
-     
 
+    //show form
     return(
         <div className="flex intems-center justify-center p-12">
             <div className="mx-auto w-full max-w-[550px] bg-white">
@@ -285,30 +289,6 @@ function Booking(){
         </div>
     );
 }
-
+//export Booking page
 export default Booking;
 
-/*
-         <div>
-                {apps.map(date => (
-                <>
-                <h1>{date.date}</h1>
-                </>
-                ))}
-            </div>
-            <div className = "px-5">
-                {dateExists ? ( <p>{dateToCheck} exists in the array</p>
-                                ) : ( <p>{dateToCheck} does not exist in the array</p>
-                                )}
-                {timeExists ? ( <p>{timeToCheck} exists in the array</p>
-                                ) : ( <p>{timeToCheck} does not exist in the array</p>
-                                )}
-            </div>
-            <div>
-                {apps.map(time => (
-                <>
-                <h1>{time.time}</h1>
-                </>
-                ))}
-            </div>
-    }  */

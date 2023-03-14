@@ -3,7 +3,9 @@ import {useNavigate} from 'react-router-dom';
 import image from './images/prices.jpeg';
 
 function Pricing(){
+     //create navigate variable
     const navigate = useNavigate();
+    //return card with prices
     return(
         <div class="flex justify-center mt-5">
             <div class="block rounded-lg shadow-lg bg-gray-100 max-w-sm text-center">
@@ -40,5 +42,5 @@ function Pricing(){
         </div>
     );
 }
-
+//export Pricing page
 export default Pricing;
