@@ -1,13 +1,13 @@
 # Booking System
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-A booking system created for a fictional Physio Company that demonstrates how this booking system can be used for a business. It was created using React.js and TailwindCSS.
+A booking system created for a fictional Physio Company that demonstrates how this booking system can be used for any business. It was created using React.js and TailwindCSS.
 
 ## Prerequisites
 
-ReactJs 
-TailwindCSS
-Firebase
+ReactJs \
+TailwindCSS\
+Firebase\
 
 npm install will install all the dependencies you will need
 
