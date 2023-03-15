@@ -152,8 +152,8 @@ function Booking(){
                         {...register("treatment", { required: true, onChange:(e) => handleInputChange(e)})}>
                             <option value="default">Choose Appointment Type</option>
                             <option value="Physio">Physio Session</option>
-                            <option value="Initial Assesment">Initial Assesment</option>
-                            <option value="Sports Massgae">Sports Massage</option>
+                            <option value="Initial Assessment">Initial Assessment</option>
+                            <option value="Sports Massage">Sports Massage</option>
                             <option value="Video Call">Video Call Consultation</option>
                             <option value="Dry Needle">Dry Needling</option>
                         </select>
