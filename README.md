@@ -7,7 +7,7 @@ A booking system created for a fictional Physio Company that demonstrates how th
 
 ReactJs \
 TailwindCSS\
-Firebase\
+Firebase
 
 npm install will install all the dependencies you will need
 
